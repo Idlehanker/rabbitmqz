@@ -5,15 +5,25 @@ import time
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
 
-channel.queue_declare(queue='hello')
+route_key = 'task-queue'
+channel.queue_declare(queue=route_key, durable=True)
+
+print(' [*] Waiting for messages. To exit press CTRL+C')
 
 def callback(ch, method, properties, body):
     print(" [x] Received %r" % body)
     time.sleep(body.count(b'.'))
     print(" [x] Done")
+    ch.basic_ack(delivery_tag = method.delivery_tag)
 
+channel.basic_qos(prefetch_count=1)
+
+'''
 channel.basic_consume(callback,
                       queue='hello',
                       no_ack=True)
-channel.start_consuming()
+'''
+channel.basic_consume(callback,
+                      queue=route_key)
 
+channel.start_consuming()
