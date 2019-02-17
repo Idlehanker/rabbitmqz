@@ -10,7 +10,7 @@ class AutoCompileEventHandler(LoggingEventHandler):
 
     def monite(self, file):
         self.filename = file
-        
+
     def on_modified(self, event):
         super(AutoCompileEventHandler, self).on_modified(event)
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
                         datefmt='%Y-%m-%d %H:%M:%S')
     path = sys.argv[1] if len(sys.argv) > 1 else '.'
     file = sys.argv[2] if len(sys.argv) > 2 else ''
-    
+
     #event_handler = LoggingEventHandler()
     event_handler = AutoCompileEventHandler()
     event_handler.monite(file)
